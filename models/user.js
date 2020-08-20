@@ -20,7 +20,19 @@ const userSchema = new Schema({
     },
     name:{
         type:String,
+    },
+    username:{
+        type:String,
+    },
+    imageUrl:{
+        type:String,
+    },
+    description:{
+        type:String,
+    },
+    gender:{
+        type:String,
     }
-});
+},{timestamps:true});
 
 module.exports = mongoose.model('User',userSchema);

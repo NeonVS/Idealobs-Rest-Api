@@ -7,12 +7,18 @@ const authRoutes = require('./routes/auth');
 
 const app = express();
 
+const fileStorage = multer.diskStorage({
+    destination:(req,file,cb)=>cb(null,'profile_images'),
+    filename:(req,file,cb)=>cb(null,Math.floor(1000 + Math.random() * 9000)+'-'+file.originalname),
+});
+
 app.use(bodyParser.json());
+app.use(multer({storage:fileStorage}).single('image'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'OPTIONS, GET, POST, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     next();
 });
 
