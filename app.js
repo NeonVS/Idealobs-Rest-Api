@@ -4,16 +4,27 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 
 const authRoutes = require('./routes/auth');
+const projectRoutes = require('./routes/projects');
 
 const app = express();
 
-const fileStorage = multer.diskStorage({
+const fileStorageProfile = multer.diskStorage({
     destination:(req,file,cb)=>cb(null,'profile_images'),
-    filename:(req,file,cb)=>cb(null,Math.floor(1000 + Math.random() * 9000)+'-'+file.originalname),
+    filename:(req,file,cb)=>cb(null,file.originalname),
+});
+const fileStorageProject = multer.diskStorage({
+    destination:(req,file,cb)=>cb(null,'project_images'),
+    filename:(req,file,cb)=>cb(null,file.originalname),
+});
+const fileStorageProjectAttachment = multer.diskStorage({
+    destination:(req,file,cb)=>cb(null,'project_files'),
+    filename:(req,file,cb)=>cb(null,file.originalname),
 });
 
 app.use(bodyParser.json());
-app.use(multer({storage:fileStorage}).single('image'));
+// app.use(multer({storage:fileStorageProfile}).single('image'));
+// app.use(multer({storage:fileStorageProject}).single('project_image'));
+// app.use(multer({storage:fileStorageProjectAttachment}).single('project_file'));
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -22,7 +33,8 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/auth', authRoutes);
+app.use('/auth',multer({storage:fileStorageProfile}).single('image'), authRoutes);
+app.use('/project',multer({storage:fileStorageProject}).fields([{name:'project_image',maxCount:1},{name:'project_file',maxCount:1}]),projectRoutes);
 
 app.use((error,req,res,next)=>{
     console.log(error);
