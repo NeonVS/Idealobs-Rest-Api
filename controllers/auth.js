@@ -12,7 +12,7 @@ sgMail.setApiKey('SG.AdVxzwSMRci7Ygw1lkVrWQ.P4QNZDbU5n2SYvk0WNz9jwpLvNnCeVNN1_mu
 exports.signup = async (req, res, next) => {
     const errors = validationResult(req);
     if(!errors.isEmpty()){
-        console.log(errors);
+        console.log(errors); 
         const error = new Error(errors.errors[0].msg);
         //error.message=errors.errors[0].msg;
         error.statusCode = 422;

@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+const {validationResult} = require('express-validator');
 const Project = require('../models/projects');
 
 exports.addProject = async (req,res,next)=>{
@@ -23,6 +23,12 @@ exports.addProject = async (req,res,next)=>{
         const documentUrl = req.files['project_file'][0].path;
         if(projectName.length<4 || companyName.length<4){
             const error = new Error('Project Name and Company Name should be at least 4 characters');
+            error.statusCode = 422;
+            return next(error);
+        }
+        const doc = await Project.findOne({projectName:projectName,creator:mongoose.Types.ObjectId(req.userId)});
+        if(doc){
+            const error = new Error('Same user cannot have multiple projects with same name!');
             error.statusCode = 422;
             return next(error);
         }
@@ -68,4 +74,13 @@ exports.addProject = async (req,res,next)=>{
         }
         return next(error);
     }
+
+}
+
+exports.checkProjectName = async (req,res,next) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(200).json({message:'false'});
+    }
+    res.status(200).json({message:'true'});
 }
