@@ -86,3 +86,16 @@ exports.checkProjectName = async (req,res,next) => {
     }
     res.status(200).json({message:'true'});
 }
+
+exports.getProjects = async (req,res,next)=>{
+    try{
+        const doc = await Project.find({creator:req.userId});
+        res.status(200).json({projects:doc});
+    }catch(error){
+        console.log(error);
+        if(!error.statusCode){
+            error.statusCode=500;
+        }
+        return next(error);
+    }
+}

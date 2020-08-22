@@ -20,4 +20,6 @@ router.post('/check_projectName',isAuth,[body('projectName').custom((value,{req}
     })
 })],projectController.checkProjectName);
 
+router.get('/get_projects',isAuth,projectController.getProjects);
+
 module.exports = router;
