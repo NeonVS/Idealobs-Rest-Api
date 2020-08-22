@@ -45,6 +45,12 @@ const projectSchema = new Schema({
         type:String,
         required:true
     },
+    categories:[
+        {
+            type:String,
+            required:true
+        }
+    ],
     likes:{
         type:Number,
         default:0

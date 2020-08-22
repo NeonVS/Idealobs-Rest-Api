@@ -19,6 +19,7 @@ exports.addProject = async (req,res,next)=>{
         const description = req.body.description;
         const dateTime = req.body.dateTime;
         const youtubeUrl = req.body.youtubeUrl;
+        const categories = req.body.categories;
         const imageUrl = req.files['project_image'][0].path;
         const documentUrl = req.files['project_file'][0].path;
         if(projectName.length<4 || companyName.length<4){
@@ -64,6 +65,7 @@ exports.addProject = async (req,res,next)=>{
             youtubeUrl:youtubeUrl,
             imageUrl:imageUrl,
             documentUrl:documentUrl,
+            categories:categories,
             creator:req.userId
         });
         const response = await project.save();
