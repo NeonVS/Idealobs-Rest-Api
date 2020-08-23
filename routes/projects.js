@@ -22,4 +22,8 @@ router.post('/check_projectName',isAuth,[body('projectName').custom((value,{req}
 
 router.get('/get_projects',isAuth,projectController.getProjects);
 
+router.get('/project_attachment',projectController.downloadAttachment);
+
+router.get('/project_image',projectController.downloadImage);
+
 module.exports = router;

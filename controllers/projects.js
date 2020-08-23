@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const path =require('path');
 const {validationResult} = require('express-validator');
 const Project = require('../models/projects');
 
@@ -98,4 +99,15 @@ exports.getProjects = async (req,res,next)=>{
         }
         return next(error);
     }
+}
+
+exports.downloadAttachment = async (req,res,next)=>{
+    console.log(req.query.creator);
+    console.log(req.query.projectName);
+    const filePath = path.join(__dirname,'..','project_images',`${req.query.creator}-${req.query.projectName}.pdf`);
+    res.download(filePath);
+}
+exports.downloadImage = async (req,res,next)=>{
+    const filePath = path.join(__dirname,'..','project_images',`${req.query.creator}-${req.query.projectName}.jpg`);
+    res.download(filePath);
 }
