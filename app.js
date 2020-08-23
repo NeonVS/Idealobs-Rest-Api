@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
+const requestRoutes = require('./routes/requests');
 
 const app = express();
 
@@ -16,8 +17,8 @@ const fileStorageProject = multer.diskStorage({
     destination:(req,file,cb)=>cb(null,'project_images'),
     filename:(req,file,cb)=>cb(null,file.originalname),
 });
-const fileStorageProjectAttachment = multer.diskStorage({
-    destination:(req,file,cb)=>cb(null,'project_files'),
+const fileStorageProjectRequest = multer.diskStorage({
+    destination:(req,file,cb)=>cb(null,'user_cv'),
     filename:(req,file,cb)=>cb(null,file.originalname),
 });
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 
 app.use('/auth',multer({storage:fileStorageProfile}).single('image'), authRoutes);
 app.use('/project',multer({storage:fileStorageProject}).fields([{name:'project_image',maxCount:1},{name:'project_file',maxCount:1}]),projectRoutes);
+app.use('/request',multer({storage:fileStorageProjectRequest}).single('cv'),requestRoutes);
 
 app.use((error,req,res,next)=>{
     console.log(error);

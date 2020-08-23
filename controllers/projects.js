@@ -6,7 +6,7 @@ const Project = require('../models/projects');
 
 exports.addProject = async (req,res,next)=>{
     if(!req.files){
-        const error = new Error('Image or file  provided!');
+        const error = new Error('Image or file not provided!');
         error.statusCode = 422;
         return next(error);
     }
