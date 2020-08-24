@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const User = require('../models/user');
 const path =require('path');
 const {validationResult} = require('express-validator');
 const Project = require('../models/projects');
@@ -70,6 +71,7 @@ exports.addProject = async (req,res,next)=>{
             creator:req.userId
         });
         const response = await project.save();
+        await User.updateOne({_id:req.userId},{$push:{enrolledProjects:mongoose.Types.ObjectId(response._id)}});
         res.status(201).json({message:'Success',userId:req.userId,projectId:response._id.toString()});
     }catch(error){
         if(!error.statusCode){

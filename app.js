@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
 const bodyParser = require('body-parser');
-
+const socketjs = require('./socket');
 const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const requestRoutes = require('./routes/requests');
@@ -47,7 +47,11 @@ app.use((error,req,res,next)=>{
 
 mongoose.connect('mongodb+srv://Vishu:vishu12345678@cluster0.t8zcy.mongodb.net/idealobsDB?retryWrites=true&w=majority',{useUnifiedTopology:true,useNewUrlParser:true}).then(result =>{
     console.log('CONNECTED TO SERVER');
-    app.listen(3000);
+    const server = app.listen(3000);
+    const io = socketjs.init(server);
+    io.on('connection',socket =>{
+        socketjs.socketConnection(socket);
+    });
 }).catch(err =>{
     console.log(err);
 })

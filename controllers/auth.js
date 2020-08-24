@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const sgMail = require('@sendgrid/mail');
 const {validationResult} = require('express-validator');
 
@@ -103,7 +104,7 @@ exports.login =async (req,res,next)=>{
         }
         const token = jwt.sign({email: email,userId:user._id},'thisisaveryveryverylongandimportantsecret',  {expiresIn:'1h'});
         await User.findByIdAndUpdate({_id:user._id},{token:token});
-        res.status(200).json({message:'success',userId:user._id,token:token});
+        res.status(200).json({message:'success',userId:user._id,token:token,enrolledProjects:user.enrolledProjects});
     }catch(error){
         if(!error.statusCode){
             error.statusCode=500;
@@ -147,4 +148,29 @@ exports.complete_profile= async (req,res,next) => {
         }
         return next(error);
     }
+}
+
+exports.profilePicture = async (req,res,next) => {
+    try{
+        let userId;
+        let username = req.query.username;
+        if(username == null){
+            userId = req.query.userId;
+            if(userId == null){
+                const error = new Error('Username and userId both are not provided!');
+                error.statusCode = 422;
+                return next(error);
+            }
+            const doc = await User.findOne({_id:userId});
+            username = doc.username;
+    }
+    const filePath = path.join(__dirname,'..','profile_images',`${username}.png`);
+    res.download(filePath);
+    }catch(error){
+        if(!error.statusCode){
+            error.statusCode=500;
+        }
+        return next(error);
+    }
+    
 }

@@ -54,4 +54,6 @@ router.post('/login', [
 
 router.post('/complete_profile',isAuth, authController.complete_profile);
 
+router.get('/profile_pic',authController.profilePicture);
+
 module.exports = router;

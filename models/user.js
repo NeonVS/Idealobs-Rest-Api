@@ -32,7 +32,13 @@ const userSchema = new Schema({
     },
     gender:{
         type:String,
-    }
+    },
+    enrolledProjects:[
+        {
+            type:Schema.Types.ObjectId,
+            ref:'Project'
+        }
+    ],
 },{timestamps:true});
 
 module.exports = mongoose.model('User',userSchema);
