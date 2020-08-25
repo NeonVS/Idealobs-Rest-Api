@@ -12,23 +12,21 @@ const messageSchema = new Schema({
         type:String,
         required:true,
     },
-    messages:[
-        {
-            message:{
-                senderId:{
-                    type:Schema.Types.ObjectId,
-                    ref:'User',
-                },
-                senderUsername:{
-                    type:Schema.Types.ObjectId,
-                    ref:'User',
-                },
-                text:{
-                    type:String,
-                }
-            }
-        }
-    ]
+    senderId:{
+        type:Schema.Types.ObjectId,
+        ref:'User',
+    },
+    dateTime:{
+        type:String,
+        required:true
+    },
+    senderUsername:{
+        type:String,
+        ref:'User',
+    },
+    text:{
+        type:String,
+    }   
 });
 
 module.exports = mongoose.model('Message',messageSchema);

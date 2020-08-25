@@ -104,7 +104,7 @@ exports.login =async (req,res,next)=>{
         }
         const token = jwt.sign({email: email,userId:user._id},'thisisaveryveryverylongandimportantsecret',  {expiresIn:'1h'});
         await User.findByIdAndUpdate({_id:user._id},{token:token});
-        res.status(200).json({message:'success',userId:user._id,token:token,enrolledProjects:user.enrolledProjects});
+        res.status(200).json({message:'success',userId:user._id,token:token,enrolledProjects:user.enrolledProjects,username:user.username});
     }catch(error){
         if(!error.statusCode){
             error.statusCode=500;
@@ -141,7 +141,7 @@ exports.complete_profile= async (req,res,next) => {
             return next(error);
         }
         const response = await User.updateOne({_id:req.userId},{gender:gender,description:description,username:username,imageUrl:req.file.path});
-        res.status(200).json({message:'success',userId:req.userId});
+        res.status(200).json({message:'success',userId:req.userId,username:username});
     }catch(error){
         if(!error.statusCode){
             error.statusCode=500;
@@ -172,5 +172,4 @@ exports.profilePicture = async (req,res,next) => {
         }
         return next(error);
     }
-    
 }
