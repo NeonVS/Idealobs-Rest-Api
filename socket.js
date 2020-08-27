@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const url = require('url');
 const Message = require('./models/messages');
 
 let io;
@@ -15,12 +15,16 @@ module.exports = {
         }
         return io;
     },
-    socketConnection: async (socket) =>{
-
+    socketConnection: async (socket,newNamespace) =>{
     console.log('client connected');
-    projectId = socket.handshake.projectId;
-    socket.join(projectId);
+    const { chatID } = url.parse(socket.handshake.url, true).query;
+    console.log('---',chatID);
+    const projectId = socket.handshake.query.chatID;
+    console.log(projectId);
+    //socket.join(projectId);
+    socket.join(newNamespace.split('-')[1]);
     socket.on('disconnect',()=>{
+        console.log('disconnected');
         socket.leave(projectId);
     });
     socket.on('send_message',async (message)=>{
@@ -35,7 +39,8 @@ module.exports = {
         });
         const response = await _message.save();
         console.log(response);
-        socket.in(message['projectId']).emit('receive_message', {
+        console.log(newNamespace);
+        io.of(`${newNamespace}`).in(newNamespace.split('-')[1]).emit(`receive-message`, {
             'projectId': message['projectId'],
             'projectName': message['projectName'],
             'senderUsername':message['senderUsername'],

@@ -92,7 +92,7 @@ exports.checkProjectName = async (req,res,next) => {
 
 exports.getProjects = async (req,res,next)=>{
     try{
-        const doc = await Project.find({creator:req.userId});
+        const doc = await Project.find();
         res.status(200).json({projects:doc});
     }catch(error){
         console.log(error);

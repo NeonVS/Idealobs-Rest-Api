@@ -51,8 +51,11 @@ mongoose.connect('mongodb+srv://Vishu:vishu12345678@cluster0.t8zcy.mongodb.net/i
     console.log('CONNECTED TO SERVER');
     const server = app.listen(3000);
     const io = socketjs.init(server);
-    io.on('connection',socket =>{
-        socketjs.socketConnection(socket);
+    var nsp =io.of(/^\/dynamic-\w+$/);
+    nsp.on('connection',socket =>{
+        const newNamespace = socket.nsp;
+        console.log(newNamespace.name);
+        socketjs.socketConnection(socket,newNamespace.name);
     });
 }).catch(err =>{
     console.log(err);

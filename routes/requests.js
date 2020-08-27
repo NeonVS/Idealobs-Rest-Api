@@ -12,5 +12,10 @@ const router = express.Router();
 router.get('/requests',isAuth,requestControllers.requests);
 router.post('/new_request', isAuth,requestControllers.newRequest
 );
+router.post('/confirm_request',isAuth,requestControllers
+.confirmRequest);
+
+router.post('/deny_request',isAuth,requestControllers
+.denyRequest);
 
 module.exports =router;

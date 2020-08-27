@@ -82,3 +82,31 @@ exports.requests = async (req,res,next) =>{
         return next(error);
     }
 }
+
+exports.confirmRequest = async (req, res,next)=>{
+    try{
+        const projectId = req.body.projectId;
+        const userId = req.body.userId;
+        await User.findOneAndUpdate({_id:mongoose.Types.ObjectId(userId)},{$push:{enrolledProjects:mongoose.Types.ObjectId(projectId)}});
+        await Request.deleteOne({from:mongoose.Types.ObjectId(userId),to:mongoose.Types.ObjectId(req.userId),projectId:projectId});
+        res.status(200).json({message:'Success'});
+    }catch(error){
+        if(!error.statusCode){
+            error.statusCode=500;
+        }
+        return next(error);
+    }
+}
+
+exports.denyRequest = async (req,res,next)=>{
+    try{
+        const projectId = req.body.projectId;
+        const userId = req.body.userId;
+        await Request.deleteOne({from:mongoose.Types.ObjectId(userId),to:mongoose.Types.ObjectId(req.userId),projectId:projectId});
+    }catch(error){
+        if(!error.statusCode){
+            error.statusCode=500;
+        }
+        return next(error);
+    }
+}
