@@ -17,10 +17,7 @@ module.exports = {
     },
     socketConnection: async (socket,newNamespace) =>{
     console.log('client connected');
-    const { chatID } = url.parse(socket.handshake.url, true).query;
-    console.log('---',chatID);
     const projectId = socket.handshake.query.chatID;
-    console.log(projectId);
     //socket.join(projectId);
     socket.join(newNamespace.split('-')[1]);
     socket.on('disconnect',()=>{

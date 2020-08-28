@@ -7,6 +7,7 @@ const authRoutes = require('./routes/auth');
 const projectRoutes = require('./routes/projects');
 const requestRoutes = require('./routes/requests');
 const messageRoutes = require('./routes/messages');
+const productRoutes = require('./routes/products');
 
 const app = express();
 
@@ -39,6 +40,7 @@ app.use('/auth',multer({storage:fileStorageProfile}).single('image'), authRoutes
 app.use('/project',multer({storage:fileStorageProject}).fields([{name:'project_image',maxCount:1},{name:'project_file',maxCount:1}]),projectRoutes);
 app.use('/request',multer({storage:fileStorageProjectRequest}).single('cv'),requestRoutes);
 app.use('/message',messageRoutes);
+app.use('/product',productRoutes);
 
 app.use((error,req,res,next)=>{
     console.log(error);
