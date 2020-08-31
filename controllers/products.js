@@ -1,28 +1,31 @@
 const mongoose = require('mongoose');
+const path = require('path');
 const {validationResult} = require('express-validator');
 
 const Product = require('../models/products');
 
 exports.addProduct = async(req,res,next)=>{
-    const projectName=req.body.projectName;
+    const productName=req.body.productName;
     const companyName=req.body.companyName;
-    const price = req.body.price;
+    let price = req.body.price;
     const info = req.body.info;
-    const latitude = req.body.latitude;
-    const longitude = req.body.longitude;
+    let latitude = req.body.latitude;
+    let longitude = req.body.longitude;
     const address1 = req.body.address1;
     const address2 = req.body.address2;
-    const pincode = req.body.pincode;
+    let pincode = req.body.pincode;
     const city = req.body.city;
     const state = req.body.state;
     const idea = req.body.idea;
     const supplyExplanation = req.body.supplyExplanation;
+    const youtubeUrl = req.body.youtubeUrl;
+    console.log(productName,companyName,price,info,latitude,longitude,address1,address2,pincode,city,state,idea,supplyExplanation,youtubeUrl);
     if(req.file == null){
         const error = new Error('Image must be provided');
         error.statusCode = 422;
         return next(error);
     }
-    if(projectName.length<4){
+    if(productName.length<4){
         const error = new Error('Project Name should be at least 4 characters');
         error.statusCode = 422;
         return next(error);
@@ -35,6 +38,7 @@ exports.addProduct = async(req,res,next)=>{
     try{
         price = parseFloat(price);
     }catch(error){
+        console.log(error);
         error = new Error('Invalid price provided');
         error.statusCode = 422;
         return next(error);
@@ -95,9 +99,14 @@ exports.addProduct = async(req,res,next)=>{
         error.statusCode = 422;
         return next(error);
     }
+    if(!youtubeUrl.includes('youtube.com')){
+        const error = new Error('Please provide correct youtube URL');
+        error.statusCode = 422;
+        return next(error);
+    }
     try{
         const product = new Product({
-            projectName:projectName,
+            productName:productName,
             companyName:companyName,
             price:price,
             info:info,
@@ -111,15 +120,36 @@ exports.addProduct = async(req,res,next)=>{
             idea:idea,
             supplyExplanation:supplyExplanation,
             creatorId:req.userId,
+            youtubeUrl:youtubeUrl,
             imageUrl:req.file.path,
         });
         const doc =await product.save();
-        res.state(201).json({message:'Success',productId:doc._id});
+        res.status(201).json({message:'Success',productId:doc._id});
+        console.log(doc);
     }catch(error){
+        console.log(error);
         if(!error.statusCode){
             error.statusCode=500;
         }
         error.message='Server Error';
         return next(error);
     }
+}
+
+exports.getProducts = async (req,res,next)=>{
+    try{
+        const doc = await Product.find();
+        res.status(200).json({products:doc});
+    }catch(error){
+        console.log(error);
+        if(!error.statusCode){
+            error.statusCode=500;
+        }
+        return next(error);
+    }
+}
+
+exports.downloadImage = async (req,res,next)=>{
+    const filePath = path.join(__dirname,'..','product_image',`${req.query.creator}-${req.query.productName}.jpg`);
+    res.download(filePath);
 }

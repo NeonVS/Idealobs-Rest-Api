@@ -8,6 +8,7 @@ const projectRoutes = require('./routes/projects');
 const requestRoutes = require('./routes/requests');
 const messageRoutes = require('./routes/messages');
 const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/cart');
 
 const app = express();
 
@@ -21,6 +22,10 @@ const fileStorageProject = multer.diskStorage({
 });
 const fileStorageProjectRequest = multer.diskStorage({
     destination:(req,file,cb)=>cb(null,'user_cv'),
+    filename:(req,file,cb)=>cb(null,file.originalname),
+});
+const fileStorageProductRequest = multer.diskStorage({
+    destination:(req,file,cb)=>cb(null,'product_image'),
     filename:(req,file,cb)=>cb(null,file.originalname),
 });
 
@@ -39,8 +44,9 @@ app.use((req, res, next) => {
 app.use('/auth',multer({storage:fileStorageProfile}).single('image'), authRoutes);
 app.use('/project',multer({storage:fileStorageProject}).fields([{name:'project_image',maxCount:1},{name:'project_file',maxCount:1}]),projectRoutes);
 app.use('/request',multer({storage:fileStorageProjectRequest}).single('cv'),requestRoutes);
+app.use('/product',multer({storage:fileStorageProductRequest}).single('product_image'),productRoutes);
 app.use('/message',messageRoutes);
-app.use('/product',productRoutes);
+app.use('/cart',cartRoutes);
 
 app.use((error,req,res,next)=>{
     console.log(error);

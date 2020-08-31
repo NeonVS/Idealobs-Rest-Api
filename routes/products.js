@@ -12,4 +12,9 @@ const router = express.Router();
 
 router.post('/add_product',isAuth,productController.addProduct);
 
+router.get('/get_products',isAuth,productController.getProducts);
+
+
+router.get('/product_image',productController.downloadImage);
+
 module.exports = router;

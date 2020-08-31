@@ -3,7 +3,7 @@ const mongoose =require('mongoose');
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
-    projectName:{
+    productName:{
         type:String,
         required:true
     },
@@ -58,6 +58,10 @@ const productSchema = new Schema({
     imageUrl:{
         type:String,
         required:true
+    },
+    youtubeUrl:{
+        type:String,
+        required:true,
     },
     creatorId:{
         type:Schema.Types.ObjectId,
