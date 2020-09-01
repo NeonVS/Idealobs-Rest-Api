@@ -9,6 +9,7 @@ const requestRoutes = require('./routes/requests');
 const messageRoutes = require('./routes/messages');
 const productRoutes = require('./routes/products');
 const cartRoutes = require('./routes/cart');
+const orderRoutes = require('./routes/order');
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/request',multer({storage:fileStorageProjectRequest}).single('cv'),requ
 app.use('/product',multer({storage:fileStorageProductRequest}).single('product_image'),productRoutes);
 app.use('/message',messageRoutes);
 app.use('/cart',cartRoutes);
+app.use('/order',orderRoutes);
 
 app.use((error,req,res,next)=>{
     console.log(error);
